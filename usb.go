@@ -235,6 +235,10 @@ func (c *Context) OpenDeviceWithVIDPID(vid, pid ID) (*Device, error) {
 	return devs[0], nil
 }
 
+func (c *Context) UseDK() error {
+	return c.libusb.useDk(c.ctx)
+}
+
 func (c *Context) closeDev(d *Device) {
 	c.mu.Lock()
 	defer c.mu.Unlock()

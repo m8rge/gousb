@@ -138,6 +138,7 @@ type libusbIntf interface {
 	getDevices(*libusbContext) ([]*libusbDevice, error)
 	exit(*libusbContext) error
 	setDebug(*libusbContext, int)
+	useDk(*libusbContext) error
 
 	// device
 	dereference(*libusbDevice)
@@ -177,6 +178,17 @@ func (libusbImpl) init() (*libusbContext, error) {
 		return nil, err
 	}
 	return (*libusbContext)(ctx), nil
+}
+
+func (libusbImpl) useDk(ctx *libusbContext) error {
+	err := fromErrNo(C.libusb_set_option((*C.libusb_context)(ctx), C.LIBUSB_OPTION_USE_USBDK))
+	if err != nil && err != ErrorNotSupported && err != ErrorNotFound {
+		// ErrorNotSupported if the option is valid but not supported on this platform
+		// ErrorNotFound if LIBUSB_OPTION_USE_USBDK is valid on this platform but UsbDk is not available
+		return err
+	}
+
+	return nil
 }
 
 func (libusbImpl) handleEvents(c *libusbContext, done <-chan struct{}) {
