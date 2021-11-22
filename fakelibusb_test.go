@@ -120,6 +120,7 @@ func (f *fakeLibusb) exit(*libusbContext) error {
 }
 
 func (f *fakeLibusb) setDebug(*libusbContext, int) {}
+func (f *fakeLibusb) useDk(*libusbContext) error   { return nil }
 func (f *fakeLibusb) dereference(d *libusbDevice)  {}
 func (f *fakeLibusb) getDeviceDesc(d *libusbDevice) (*DeviceDesc, error) {
 	if dev, ok := f.fakeDevices[d]; ok {

@@ -32,6 +32,7 @@ struct libusb_transfer *gousb_alloc_transfer_and_buffer(int bufLen, int numIsoPa
 void gousb_free_transfer_and_buffer(struct libusb_transfer *xfer);
 int submit(struct libusb_transfer *xfer);
 void gousb_set_debug(libusb_context *ctx, int lvl);
+int gousb_use_dk(libusb_context *ctx);
 */
 import "C"
 
@@ -181,7 +182,7 @@ func (libusbImpl) init() (*libusbContext, error) {
 }
 
 func (libusbImpl) useDk(ctx *libusbContext) error {
-	err := fromErrNo(C.libusb_set_option((*C.libusb_context)(ctx), C.LIBUSB_OPTION_USE_USBDK))
+	err := fromErrNo(C.gousb_use_dk((*C.libusb_context)(ctx)))
 	if err != nil && err != ErrorNotSupported && err != ErrorNotFound {
 		// ErrorNotSupported if the option is valid but not supported on this platform
 		// ErrorNotFound if LIBUSB_OPTION_USE_USBDK is valid on this platform but UsbDk is not available
